@@ -1,40 +1,42 @@
 extends Node2D
 
 @export var color: String
-var type = "normal"
-var matched = false
+var type := "normal"
+var matched := false
 
-func move(target):
-	var move_tween = create_tween()
-	move_tween.set_trans(Tween.TRANS_ELASTIC)
-	move_tween.set_ease(Tween.EASE_OUT)
-	move_tween.tween_property(self, "position", target, 0.4)
+# movimiento: uso create_tween con curva distinta (misma idea funcional)
+func move(target:Vector2) -> void:
+	var tw = get_tree().create_tween()
+	tw.tween_property(self, "position", target, 0.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
-func dim():
+# visual helpers
+func dim() -> void:
 	$Sprite2D.modulate = Color(1, 1, 1, 0.5)
-	
-func normal():
+
+func normal() -> void:
 	$Sprite2D.modulate = Color(1, 1, 1, 1)
 
-func newSprite(isVertical):
-	var aux :String = color
-	aux[0]=aux[0].to_upper()
-	if color == "light_green":
-		aux = "Light Green"
-	if(isVertical):
+# construye nombre legible para archivo desde color (maneja "light_green")
+func _readable_name(col:String) -> String:
+	if col == "light_green":
+		return "Light Green"
+	# reemplazar '_' por ' ' y capitalizar cada palabra
+	var parts = col.split("_")
+	for i in range(parts.size()):
+		parts[i] = parts[i].capitalize()
+	return " ".join(parts)
+
+func newSprite(isVertical:bool) -> void:
+	var name = _readable_name(color)
+	if isVertical:
 		type = "Column"
 	else:
 		type = "Row"
-	var image = "res://assets/pieces/"+aux+ " "+ type+".png"
-	
-	$Sprite2D.texture = load(image)
-	
-func newSpriteFive():
-	var aux :String = color
-	aux[0]=aux[0].to_upper()
-	if color == "light_green":
-		aux = "Light Green"
-	type = "Adjacent"
-	var image = "res://assets/pieces/"+aux+ " "+ type+".png"
+	var image_path = "res://assets/pieces/%s %s.png" % [name, type]
+	$Sprite2D.texture = load(image_path)
 
-	$Sprite2D.texture = load(image)
+func newSpriteFive() -> void:
+	var name = _readable_name(color)
+	type = "Adjacent"
+	var image_path = "res://assets/pieces/%s %s.png" % [name, type]
+	$Sprite2D.texture = load(image_path)
