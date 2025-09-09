@@ -1,0 +1,16 @@
+# Godot-specific ignores
+.godot/
+.mono/
+*.translation
+*.remap
+*.import
+!SquashMergeMsg.gd.remap
+
+# Binaries
+export_presets.cfg
+*.binary
+
+# Mono-specific ignores
+.mono/
+/bin/
+/obj/
